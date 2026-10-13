@@ -24,20 +24,29 @@ body {
 #gridder {
 	display: none;				/* set to grid by renderer.js, just done like this to hide it until script is active. */
 	height: 100vh;
-	grid-template-columns: min-content min-content 1fr;
+	grid-template-columns: min-content min-content minmax(0, 1fr) min-content;		/* Window width changes are absorbed by the t_c column. */
 	grid-template-rows: min-content 1fr;
 	grid-template-areas:
-		"tabs info t_c"
-		"tabs b_g  t_c";
+		"tabs info t_c ."
+		"tabs b_g  t_c graph";
 }
 
 #gridder_board_graph {
 	display: grid;
 	grid-area: b_g;
-	grid-template-columns: min-content min-content min-content;
+	grid-template-columns: min-content;
 	grid-template-rows: 1fr;
 	grid-template-areas:
-		"board graph ghandle";
+		"board";
+}
+
+#gridder_graph {
+	display: grid;
+	grid-area: graph;
+	grid-template-columns: min-content min-content;
+	grid-template-rows: 1fr;
+	grid-template-areas:
+		"ghandle graph";
 }
 
 #gridder_tree_comments {
@@ -45,9 +54,12 @@ body {
 	display: grid;
 	grid-area: t_c;
 	height: 100vh;
-	grid-template-columns: 1fr;
-	grid-template-rows: minmax(0, 1fr) min-content minmax(0, 256px);	/* Last row is set from JS (comment_drawer) to match config.comment_box_height */
+	min-width: 0;
+	overflow: hidden;
+	grid-template-columns: minmax(0, 1fr);
+	grid-template-rows: min-content minmax(0, 1fr) min-content minmax(0, 256px);	/* Last row is set from JS (comment_drawer) to match config.comment_box_height */
 	grid-template-areas:
+		"tier"
 		"tree"
 		"chandle"
 		"comments";
@@ -147,7 +159,7 @@ body {
 	z-index: 2;
 }
 
-#graphhandle {							/* The 8px width replaces what used to be the graph's right margin. */
+#graphhandle {							/* On the graph's left, separating it from the tree. */
 	grid-area: ghandle;
 	cursor: col-resize;
 	pointer-events: auto;
@@ -165,6 +177,93 @@ body.row_dragging, body.row_dragging * {
 }
 
 /* ----------------------------------------------------------------------------------------------------------------------------------------------- */
+
+#tierlist {							/* Tiermaker-like look. Displayed or not according to config.tierlist_visible */
+	grid-area: tier;
+	background-color: #1a1a17ff;
+	color: #efefefff;
+	font-family: sans-serif;
+	max-height: 50vh;
+	min-width: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+	pointer-events: auto;
+}
+
+.tier_table {
+	background-color: #000000ff;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: 2px 0;
+}
+
+.tier_row {
+	display: flex;
+	min-height: 72px;
+}
+
+.tier_label {
+	align-items: center;
+	color: #000000ff;
+	cursor: pointer;
+	display: flex;
+	flex: 0 0 64px;
+	font-size: 1.6em;
+	justify-content: center;
+	min-width: 0;
+	overflow: hidden;
+	text-align: center;
+}
+
+.tier_label.tier_label_text {			/* A word rather than a single letter. */
+	font-size: 0.8em;
+}
+
+.tier_label:hover {
+	filter: brightness(1.15);
+}
+
+.tier_label:active {
+	filter: brightness(0.85);
+}
+
+.tier_items {
+	align-content: flex-start;
+	background-color: #1a1a17ff;
+	display: flex;
+	flex: 1 1 auto;
+	flex-wrap: wrap;
+	gap: 4px;							/* Gaps between icons, and padding, so each icon reads as a separate tile. */
+	min-width: 0;
+	padding: 4px;
+}
+
+.tier_items.tier_drop_end {
+	box-shadow: inset -4px 0 0 #ffffffff;
+}
+
+.tier_icon {
+	border: 1px solid #000000ff;
+	box-sizing: border-box;
+	cursor: pointer;
+	display: block;
+	height: 72px;
+	width: auto;
+}
+
+.tier_icon:hover {
+	outline: 2px solid #ffffffff;
+	outline-offset: -2px;
+}
+
+.tier_icon.tier_dragging {
+	opacity: 0.4;
+}
+
+.tier_icon.tier_drop_before {
+	box-shadow: -4px 0 0 #ffffffff;
+}
 
 #treecanvas {
 	grid-area: tree;

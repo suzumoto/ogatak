@@ -45,6 +45,10 @@ class LoadResults {
 		}
 	}
 
+	remove_roots(roots) {
+		this._roots = this._roots.filter(root => !roots.includes(root));
+	}
+
 	add_errors(...args) {				// args are expected to be actual errors, or strings.
 		let arr = args.flat(Infinity);
 		for (let error of arr) {

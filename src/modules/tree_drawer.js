@@ -44,7 +44,7 @@ let tree_drawer_prototype = {
 
 		let bounding_client_rect = this.canvas.getBoundingClientRect();
 
-		let correct_width = Math.max(0, window.innerWidth - bounding_client_rect.left);
+		let correct_width = Math.max(0, this.canvas.parentElement.clientWidth);		// The graph may be to our right.
 		let correct_height = Math.max(0, window.innerHeight - bounding_client_rect.top - config.comment_box_height - this.commentshandle.offsetHeight);
 		let size_is_ok = this.canvas.width === correct_width && this.canvas.height === correct_height;
 

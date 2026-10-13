@@ -132,6 +132,7 @@ translations[`English`] = {
 		MENU_SHOW_MOVE_NUMBERS: `Move numbers`,
 		MENU_COORDINATES: `Coordinates`,
 		MENU_STONE_COUNTS: `Stone counts`,
+		MENU_JOSEKI_TIERLIST: `Joseki tier list`,
 		MENU_COLOURS: `Colours`,
 
 	MENU_SIZES: `Sizes`,
@@ -242,6 +243,9 @@ translations[`English`] = {
 	BAD_CONFIG_3: `This means your settings will not be saved.`,
 	BAD_CONFIG_4: `You should fix this.`,
 	BAD_CONFIG_5: `You can also just delete the file.`,
+
+	// Joseki tier list...
+	TIER_UNRANKED: `Unranked`,
 
 };
 
@@ -1468,6 +1472,7 @@ translations[`日本語`] = {
 		MENU_SHOW_MOVE_NUMBERS: `手数を表示`,
 		MENU_COORDINATES: `座標`,
 		MENU_STONE_COUNTS: `石数を表示`,
+		MENU_JOSEKI_TIERLIST: `定石Tier表`,
 		MENU_COLOURS: `配色`,
 
 	MENU_SIZES: `サイズ`,
@@ -1577,6 +1582,9 @@ translations[`日本語`] = {
 	BAD_CONFIG_3: `つまり、設定の変更は保存されないということです。`,
 	BAD_CONFIG_4: `この問題を修正してください。`,
 	BAD_CONFIG_5: `単にファイルを削除してしまっても構いません。`,
+
+	// Joseki tier list...
+	TIER_UNRANKED: `未分類`,
 
 };
 

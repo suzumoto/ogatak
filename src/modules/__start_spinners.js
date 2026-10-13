@@ -1,5 +1,7 @@
 "use strict";
 
+const session = require("./session");
+
 // A "spinner" is just what I call a function that calls itself via setTimeout. They "spin".
 // I'm sure there's some technical term somewhere. The rather arbitrary timings are just to
 // make accidental sync-ups less common, which could conceivably cause lag when they occur.
@@ -125,8 +127,8 @@
 
 (function handle_grapher_drag_spinner() {
 	if (typeof grapher.pending_handle_drag_x === "number") {
-		let width = Math.round(grapher.handle_drag_start_width + grapher.pending_handle_drag_x - grapher.handle_drag_start_x);
-		let max_width = Math.round(window.innerWidth - grapher.canvas.getBoundingClientRect().left - grapher.handle.offsetWidth);	// So the handle stays onscreen.
+		let width = Math.round(grapher.handle_drag_start_width - (grapher.pending_handle_drag_x - grapher.handle_drag_start_x));	// Handle is on the graph's left.
+		let max_width = Math.round(window.innerWidth - comment_drawer.gridder.getBoundingClientRect().left - grapher.handle.offsetWidth);
 		if (width > max_width) width = max_width;
 		if (width < 40) width = 0;			// Below 40, the grapher is too_small_to_draw() anyway (24 + its two 8px x offsets).
 		hub.set("graph_width", width);
@@ -148,14 +150,14 @@
 })();
 
 // ------------------------------------------------------------------------------------------------
-// If the window shrinks, the graph handle can be pushed offscreen right, where it can never be
-// grabbed again, so reduce the graph width as needed to keep it onscreen. We take no action during
-// a drag, which has its own clamp in any case.
+// If the window shrinks (once the tree / tier list column is already at zero width) the graph can
+// be pushed offscreen right, so reduce the graph width as needed to keep it onscreen. We take no
+// action during a drag, which has its own clamp in any case.
 
 (function graph_handle_rescue_spinner() {
 
 	if (!grapher.handle_dragging && config.graph_width > 0) {		// The > 0 check matters: if even width 0 doesn't help, we must not spam hub.set().
-		let overshoot = Math.ceil(grapher.handle.getBoundingClientRect().right - window.innerWidth);
+		let overshoot = Math.ceil(grapher.canvas.getBoundingClientRect().right - window.innerWidth);
 		if (overshoot > 0) {
 			let width = config.graph_width - overshoot;
 			if (width < 40) width = 0;
@@ -178,6 +180,13 @@
 		}
 	}
 	setTimeout(engine_failure_spinner, 1234);
+})();
+
+// ------------------------------------------------------------------------------------------------
+
+(function session_autosave_spinner() {
+	session.save();									// Only writes if something changed.
+	setTimeout(session_autosave_spinner, 10000);
 })();
 
 // ------------------------------------------------------------------------------------------------

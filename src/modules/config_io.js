@@ -74,6 +74,8 @@ exports.defaults = {
 
 	"thumbnail_square_size": 4,
 
+	"tierlist_visible": true,					// Joseki tier list (data is in joseki_tierlist.json, not here).
+
 	"graph_type": 1,							// 1: Winrate   2: Score
 	"minor_graph_linewidth": 1,
 	"major_graph_linewidth": 2,

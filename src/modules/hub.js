@@ -16,6 +16,7 @@ const toast = require("./toast");
 const new_load_results = require("./loader_results");
 const make_perf_report = require("./performance");
 const root_fixes = require("./root_fixes");
+const session = require("./session");
 const {save_sgf, save_sgf_multi, tree_string} = require("./save_sgf");
 const {fast_maxvisits, new_query} = require("./query");
 
@@ -163,7 +164,7 @@ let hub_main_props = {
 	// Saving......................................................................................
 
 	save: function(filepath) {
-		save_sgf(this.node, filepath);
+		save_sgf(this.node, filepath, tierlist.export_strings());
 		let root = this.node.get_root();
 		root.filepath = filepath;
 		root.save_ok = true;
@@ -181,7 +182,7 @@ let hub_main_props = {
 
 	save_collection: function(filepath) {
 		let nodes = tabber.tab_node_list(this.node);
-		save_sgf_multi(nodes, filepath);
+		save_sgf_multi(nodes, filepath, tierlist.export_strings());
 		toast(translate("ALERT_SAVED_COLLECTION"), 1600);
 	},
 
@@ -199,6 +200,14 @@ let hub_main_props = {
 		if (load_results === null) {
 			load_results = new_load_results();
 			load_results.add_errors("load_from_buffer(): got no object");
+		}
+
+		// Game trees holding the joseki tier list (see tierlist.js) are not games, they restore the tier list...
+
+		let tier_roots = load_results.get_roots().filter(root => tierlist.is_tier_root(root));
+		if (tier_roots.length > 0) {
+			load_results.remove_roots(tier_roots);
+			tierlist.import_roots(tier_roots);
 		}
 
 		if (filepath) {
@@ -1040,6 +1049,7 @@ let hub_main_props = {
 
 	quit: function() {
 		this.engine.shutdown();
+		session.save();
 		config_io.save();					// As long as we use the sync save, this will complete before we
 		ipcRenderer.send("terminate");		// send "terminate". Not sure about results if that wasn't so.
 	},

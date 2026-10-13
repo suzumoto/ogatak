@@ -5,9 +5,11 @@ const fs = require("fs");
 // Although JS stores strings internally as UTF-16 or something, Node's writeFileSync()
 // uses UTF-8 by default. So all our output files are UTF-8.
 
-function save_sgf(node, filepath) {
+// extra_strings are further game trees to append to the file (e.g. the joseki tier list).
+
+function save_sgf(node, filepath, extra_strings = []) {
 	try {
-		fs.writeFileSync(filepath, tree_string(node));
+		fs.writeFileSync(filepath, [tree_string(node)].concat(extra_strings).join("\n\n"));
 	} catch (err) {
 		alert(err);
 	}
@@ -38,12 +40,13 @@ function __tree_string(node) {
 	return list.join("");
 }
 
-function save_sgf_multi(nodes, filepath) {
+function save_sgf_multi(nodes, filepath, extra_strings = []) {
 	try {
 		let list = [];
 		for (let node of nodes) {
 			list.push(tree_string(node));
 		}
+		list = list.concat(extra_strings);
 		fs.writeFileSync(filepath, list.join("\n\n"));
 	} catch (err) {
 		alert(err);

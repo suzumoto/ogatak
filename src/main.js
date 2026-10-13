@@ -1744,6 +1744,18 @@ function menu_build() {
 					type: "separator",
 				},
 				{
+					label: translate("MENU_JOSEKI_TIERLIST"),
+					type: "checkbox",
+					checked: config.tierlist_visible,
+					accelerator: "CommandOrControl+Shift+J",
+					click: () => {
+						win.webContents.send("toggle", "tierlist_visible");
+					}
+				},
+				{
+					type: "separator",
+				},
+				{
 					label: translate("MENU_COLOURS"),
 					submenu: colour_choices_submenu(),
 				},

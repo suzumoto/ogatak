@@ -33,11 +33,13 @@ function startup() {
 	global.grapher = require("./grapher");
 	global.tree_drawer = require("./tree_drawer");
 	global.comment_drawer = require("./comment_drawer");
+	global.tierlist = require("./tierlist");
 	global.fullbox = require("./fullbox");
 	global.stderrbox = require("./stderrbox");
 	global.root_editor = require("./root_editor");
 
 	hub.new_game(19, 19);
+	require("./session").restore();					// Reopen the tabs from last time, if any.
 
 	require("./__start_handlers");
 	require("./__start_spinners");

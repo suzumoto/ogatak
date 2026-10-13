@@ -35,6 +35,7 @@ const togglechecks = {
 	coordinates:			[translate("MENU_DISPLAY"), translate("MENU_COORDINATES")],
 	black_pov:				[translate("MENU_DISPLAY"), translate("MENU_BLACK_POV_ALWAYS")],
 	stone_counts:			[translate("MENU_DISPLAY"), translate("MENU_STONE_COUNTS")],
+	tierlist_visible:		[translate("MENU_DISPLAY"), translate("MENU_JOSEKI_TIERLIST")],
 	candidate_moves:		[translate("MENU_DISPLAY"), translate("MENU_CANDIDATE_MOVES")],
 	no_ponder_no_candidates:[translate("MENU_DISPLAY"), translate("MENU_NO_PONDER_NO_CANDIDATES")],
 	mouseover_pv:			[translate("MENU_DISPLAY"), translate("MENU_WITH_PV_MOUSEOVER")],
@@ -206,6 +207,11 @@ module.exports = {
 		case "midline_graph_colour":
 
 			grapher.draw_graph(this.node);
+			break;
+
+		case "tierlist_visible":
+
+			tierlist.apply_visibility();			// The tree_drawer will notice its canvas is the wrong size soon enough.
 			break;
 
 		case "graph_width":

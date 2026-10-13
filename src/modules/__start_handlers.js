@@ -47,7 +47,7 @@ window.addEventListener("wheel", (event) => {
 
 	let path = event.composedPath();
 
-	for (let element of [tabber.outer_div, comment_drawer.textarea]) {		// 2 items can have scrollbars.
+	for (let element of [tabber.outer_div, comment_drawer.textarea, tierlist.outer_div]) {		// 3 items can have scrollbars.
 		if (element.scrollHeight > element.clientHeight) {					// If they do, the mouse wheel should not be used to scroll the game.
 			if (path.some(item => item === element)) {						// Only if the mouse is actually over them, though.
 				return;
