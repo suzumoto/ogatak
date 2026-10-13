@@ -40,6 +40,13 @@ let have_confirmed_quit = false;
 let queued_files = [];
 let spacebar_time = 0;			// Contrived workaround allowing us to have these as
 let comma_time = 0;				// accelerators without interfering with text editing
+let nav_key_times = Object.create(null);		// Likewise for navigation keys (Up, Down, etc) which the renderer handles itself.
+
+const NAV_KEY_CODES = ["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End"];
+
+function nav_key_recently_pressed(code) {
+	return new Date() - (nav_key_times[code] || 0) <= 200;
+}
 
 // --------------------------------------------------------------------------------------------------------------
 // Make note of argv strings which could be files to open...
@@ -95,6 +102,8 @@ electron.app.whenReady().then(() => {					// If "ready" event already happened, 
 				spacebar_time = new Date();
 			} else if (input.code === "Comma") {
 				comma_time = new Date();
+			} else if (NAV_KEY_CODES.includes(input.code)) {
+				nav_key_times[input.code] = new Date();
 			}
 		}
 	});
@@ -747,6 +756,7 @@ function menu_build() {
 					label: translate("MENU_ROOT"),
 					accelerator: "Home",		// Likely intercepted by the renderer process, see __start_handlers.js
 					click: () => {
+						if (nav_key_recently_pressed("Home")) return;		// Keypress (not click) - handled by the renderer.
 						win.webContents.send("call", "go_to_root");
 					}
 				},
@@ -754,6 +764,7 @@ function menu_build() {
 					label: translate("MENU_END"),
 					accelerator: "End",			// Likely intercepted by the renderer process, see __start_handlers.js
 					click: () => {
+						if (nav_key_recently_pressed("End")) return;		// Keypress (not click) - handled by the renderer.
 						win.webContents.send("call", "go_to_end");
 					}
 				},
@@ -764,6 +775,7 @@ function menu_build() {
 					label: translate("MENU_BACKWARD"),
 					accelerator: "Up",			// Likely intercepted by the renderer process, see __start_handlers.js
 					click: () => {
+						if (nav_key_recently_pressed("ArrowUp")) return;		// Keypress (not click) - handled by the renderer.
 						win.webContents.send("call", {
 							fn: "input_up_down",
 							args: [-1]
@@ -774,6 +786,7 @@ function menu_build() {
 					label: translate("MENU_FORWARD"),
 					accelerator: "Down",		// Likely intercepted by the renderer process, see __start_handlers.js
 					click: () => {
+						if (nav_key_recently_pressed("ArrowDown")) return;		// Keypress (not click) - handled by the renderer.
 						win.webContents.send("call", {
 							fn: "input_up_down",
 							args: [1]
@@ -787,6 +800,7 @@ function menu_build() {
 					label: translate("MENU_BACKWARD_10"),
 					accelerator: "PageUp",		// Likely intercepted by the renderer process, see __start_handlers.js
 					click: () => {
+						if (nav_key_recently_pressed("PageUp")) return;		// Keypress (not click) - handled by the renderer.
 						win.webContents.send("call", {
 							fn: "input_up_down",
 							args: [-10]
@@ -797,6 +811,7 @@ function menu_build() {
 					label: translate("MENU_FORWARD_10"),
 					accelerator: "PageDown",	// Likely intercepted by the renderer process, see __start_handlers.js
 					click: () => {
+						if (nav_key_recently_pressed("PageDown")) return;		// Keypress (not click) - handled by the renderer.
 						win.webContents.send("call", {
 							fn: "input_up_down",
 							args: [10]

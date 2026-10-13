@@ -307,11 +307,25 @@ window.addEventListener("keydown", (event) => {
 });
 
 // Space / Comma events shouldn't be handled by the above if they're on the comments box, or the root editor...
+// Likewise navigation keys in the comments box should move the caret (or the IME candidate selection) instead
+// of moving in the tree. Note that main.js ignores the menu accelerators for these keys, see nav_key_times.
+// Tab or Escape leaves the comments box (unless the IME is composing, in which case it gets them).
+
+const COMMENT_PASSTHROUGH_CODES = ["Space", "Comma", "ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End"];
 
 comment_drawer.textarea.addEventListener("keydown", (event) => {
-	if (event.code === "Space" || event.code === "Comma") {
+	if (event.isComposing || event.keyCode === 229) {	// IME is handling the key.
+		event.stopPropagation();
+		return;
+	}
+	if (COMMENT_PASSTHROUGH_CODES.includes(event.code)) {
 		event.stopPropagation();						// Stops it reaching the handler on window, above, which would call hub.something().
 	}													// We don't call preventDefault() since that prevents the edit to the textarea.
+	if (event.code === "Tab" || event.code === "Escape") {
+		event.preventDefault();
+		event.stopPropagation();
+		comment_drawer.textarea.blur();
+	}
 });
 
 root_editor.inner_div.addEventListener("keydown", (event) => {
